@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="Marcelo Perlin" />
+
+<meta name="date" content="2017-09-05" />
+
+<title>How to use GetLattesData</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+
+
+<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">How to use GetLattesData</h1>
+<h4 class="author"><em>Marcelo Perlin</em></h4>
+<h4 class="date"><em>2017-09-05</em></h4>
+
+
+
+<p><a href="http://lattes.cnpq.br/">Lattes</a> is the largest and unique platform for academic curriculumns. There you can find information about the academic work of <strong>ALL</strong> Brazilian scholars. It includes institution of PhD, current employer, field of work, all publications metadata and many more. It is an unique and reliable source of information for bibliometric studies.</p>
+<p>I’ve been working with Lattes data for some time. Here I present a short list of papers that have used this data.</p>
+<ul>
+<li><p><a href="http://www.sciencedirect.com/science/article/pii/S1751157716301559">The Brazilian scientific output published in journals: A study based on a large CV database</a></p></li>
+<li><p><a href="http://bibliotecadigital.fgv.br/ojs/index.php/rbfin/article/view/47157">The researchers, the publications and the journals of Finance in Brazil: An analysis based on resumes from the Lattes platform</a></p></li>
+<li><p><a href="http://www.scielo.br/scielo.php?script=sci_arttext&amp;pid=S1415-65552017000100062">Análise do Perfil dos Acadêmicos e de suas Publicações Científicas em Administração (in Portuguese)</a></p></li>
+<li><p>Predatory publications in the Brazilian academic system: an empirical analysis (Working paper)</p></li>
+</ul>
+<p>Package <code>GetLattesData</code> is a wrap up of the functions that I’ve been using for acessing the dataset. It’s main innovation is the possibility of downloading data directly from Lattes, without any kind of manual work.</p>
+<div id="example-of-usage" class="section level1">
+<h1>Example of usage</h1>
+<p>Let’s consider a simple example of downloading information for a group of scholars. I selected a couple of coleagues at my university. Their Lattes id can be easilly found in <a href="http://lattes.cnpq.br/">Lattes website</a>. After searching for a name, notice the internet address of the resulting CV, such as <a href="http://buscatextual.cnpq.br/buscatextual/visualizacv.do?id=K4713546D3" class="uri">http://buscatextual.cnpq.br/buscatextual/visualizacv.do?id=K4713546D3</a>. Lattes ID is the final 10 digit code of this address. In our case, it is <code>'K4713546D3'</code>.</p>
+<p>Since we all work in the business department of UFRGS, the quality of our publications is locally set by the Qualis ranking of field <code>'ADMINISTRAÇÃO PÚBLICA E DE EMPRESAS, CIÊNCIAS CONTÁBEIS E TURISMO'</code>. Qualis is the local journal ranking in Brazil. You can read more about Qualis in <a href="https://en.wikipedia.org/wiki/Qualis_(CAPES)">Wikipedia</a> and <a href="http://www.sciencedirect.com/science/article/pii/S1751157716301559">here</a></p>
+<p>Now, based on the two sets of information, vector of ids and field of Qualis, we can use <code>GetLattesData</code> to download all up to date information about the researchers:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(GetLattesData)
+
+<span class="co"># ids from EA-UFRGS</span>
+my.ids &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">'K4713546D3'</span>, <span class="st">'K4440252H7'</span>, 
+            <span class="st">'K4783858A0'</span>, <span class="st">'K4723925J2'</span>)
+
+<span class="co"># qualis for the field of management</span>
+field.qualis =<span class="st"> 'ADMINISTRAÇÃO PÚBLICA E DE EMPRESAS, CIÊNCIAS CONTÁBEIS E TURISMO'</span>
+
+l.out &lt;-<span class="st"> </span><span class="kw">gld_get_lattes_data</span>(<span class="dt">id.vec =</span> my.ids, <span class="dt">field.qualis =</span> field.qualis)</code></pre></div>
+<pre><code>## 
+## Downloading file  /tmp/RtmpbdvilZ/K4713546D3_2017-09-05.zip
+## Downloading file  /tmp/RtmpbdvilZ/K4440252H7_2017-09-05.zip
+## Downloading file  /tmp/RtmpbdvilZ/K4783858A0_2017-09-05.zip
+## Downloading file  /tmp/RtmpbdvilZ/K4723925J2_2017-09-05.zip
+## Reading  K4713546D3_2017-09-05.zip -  Marcelo Scherer Perlin  found 18  papers
+## Reading  K4440252H7_2017-09-05.zip -  Marcelo Brutti Righi    found 42  papers
+## Reading  K4783858A0_2017-09-05.zip -  João Luiz Becker    found 58  papers
+## Reading  K4723925J2_2017-09-05.zip -  Denis Borenstein    found 64  papers</code></pre>
+<p>The output <code>my.l</code> is a list with two items:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(l.out)</code></pre></div>
+<pre><code>## [1] &quot;tpesq&quot;   &quot;tpublic&quot;</code></pre>
+<p>The first is a dataframe with information about researchers:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tpesq &lt;-<span class="st"> </span>l.out<span class="op">$</span>tpesq
+<span class="kw">str</span>(tpesq)</code></pre></div>
+<pre><code>## 'data.frame':    4 obs. of  9 variables:
+##  $ name           : chr  &quot;Marcelo Scherer Perlin&quot; &quot;Marcelo Brutti Righi&quot; &quot;João Luiz Becker&quot; &quot;Denis Borenstein&quot;
+##  $ last.update    : Date, format: &quot;2017-08-29&quot; &quot;2017-08-02&quot; ...
+##  $ phd.institution: chr  &quot;University of Reading&quot; &quot;Universidade Federal de Santa Maria&quot; &quot;University Of California At Los Angeles&quot; &quot;University of Strathclyde&quot;
+##  $ phd.start.year : chr  &quot;2007&quot; &quot;2013&quot; &quot;1982&quot; &quot;1991&quot;
+##  $ phd.end.year   : chr  &quot;2010&quot; &quot;2015&quot; &quot;1986&quot; &quot;1995&quot;
+##  $ country.origin : Factor w/ 1 level &quot;Brasil&quot;: 1 1 1 1
+##  $ Major Field    : chr  &quot;CIENCIAS_SOCIAIS_APLICADAS&quot; &quot;CIENCIAS_SOCIAIS_APLICADAS&quot; &quot;CIENCIAS_SOCIAIS_APLICADAS&quot; &quot;ENGENHARIAS&quot;
+##  $ Minor Field    : chr  &quot;Administração&quot; &quot;Administração&quot; &quot;Administração&quot; &quot;Engenharia de Produção&quot;
+##  $ id.file        : chr  &quot;K4713546D3_2017-09-05.zip&quot; &quot;K4440252H7_2017-09-05.zip&quot; &quot;K4783858A0_2017-09-05.zip&quot; &quot;K4723925J2_2017-09-05.zip&quot;</code></pre>
+<p>and the second dataframe containing information about all publications, including Qualis and SJR:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tpublic &lt;-<span class="st"> </span>l.out<span class="op">$</span>tpublic
+<span class="kw">str</span>(tpublic)</code></pre></div>
+<pre><code>## 'data.frame':    182 obs. of  13 variables:
+##  $ name         : chr  &quot;Marcelo Scherer Perlin&quot; &quot;Marcelo Scherer Perlin&quot; &quot;Marcelo Scherer Perlin&quot; &quot;Marcelo Scherer Perlin&quot; ...
+##  $ article.title: chr  &quot;Análise do Perfil dos Acadêmicos e de suas Publicações Científicas em Administração&quot; &quot;The Brazilian scientific output published in journals: A study based on a large CV database&quot; &quot;THE FORECASTING POWER OF INTERNET SEARCH QUERIES IN THE BRAZILIAN FINANCIAL MARKET&quot; &quot;A multistage stochastic programming asset-liability management model: an application to the Brazilian pension fund industry&quot; ...
+##  $ year         : chr  &quot;2017&quot; &quot;2017&quot; &quot;2017&quot; &quot;2017&quot; ...
+##  $ language     : chr  &quot;Português&quot; &quot;Inglês&quot; &quot;Inglês&quot; &quot;Inglês&quot; ...
+##  $ journal.title: chr  &quot;RAC. Revista de Administração Contemporânea (Impresso)&quot; &quot;Journal of Informetrics&quot; &quot;RAM. REVISTA DE ADMINISTRAÇÃO MACKENZIE (ONLINE)&quot; &quot;OPTIMIZATION AND ENGINEERING&quot; ...
+##  $ ISSN         : chr  &quot;1415-6555&quot; &quot;1751-1577&quot; &quot;1678-6971&quot; &quot;1389-4420&quot; ...
+##  $ start.page   : chr  &quot;62&quot; &quot;18&quot; &quot;184&quot; &quot;349&quot; ...
+##  $ end.page     : chr  &quot;83&quot; &quot;31&quot; &quot;210&quot; &quot;368&quot; ...
+##  $ order.aut    : chr  &quot;2&quot; &quot;1&quot; &quot;3&quot; &quot;3&quot; ...
+##  $ n.authors    : chr  &quot;3&quot; &quot;5&quot; &quot;3&quot; &quot;5&quot; ...
+##  $ qualis       : chr  &quot;A2&quot; NA &quot;B1&quot; &quot;A2&quot; ...
+##  $ SJR          : num  NA 2.029 NA 0.481 NA ...
+##  $ H.SJR        : int  NA 50 NA 29 NA NA 45 NA NA NA ...</code></pre>
+<div id="an-application-of-getlattesdata" class="section level2">
+<h2>An application of <code>GetLattesData</code></h2>
+<p>Based on <code>GetLattesData</code> and other packages, it is easy to create academic reports for a large number of researchers. See next, where we plot the number of publications for each researcher, conditioning on Qualis ranking.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2)
+
+p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(tpublic, <span class="kw">aes</span>(<span class="dt">x =</span> qualis)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_bar</span>(<span class="dt">position =</span> <span class="st">'identity'</span>) <span class="op">+</span><span class="st"> </span><span class="kw">facet_wrap</span>(<span class="op">~</span>name) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="kw">paste0</span>(<span class="st">'Qualis: '</span>, field.qualis))
+<span class="kw">print</span>(p)</code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p>We can also use <code>dplyr</code> to do some simple assessment of academic productivity:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(dplyr)</code></pre></div>
+<pre><code>## 
+## Attaching package: 'dplyr'</code></pre>
+<pre><code>## The following objects are masked from 'package:stats':
+## 
+##     filter, lag</code></pre>
+<pre><code>## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">my.tab &lt;-<span class="st"> </span>tpublic <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">group_by</span>(name) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">n.papers =</span> <span class="kw">n</span>(),
+            <span class="dt">max.SJR =</span> <span class="kw">max</span>(SJR, <span class="dt">na.rm =</span> T),
+            <span class="dt">mean.SJR =</span> <span class="kw">mean</span>(SJR, <span class="dt">na.rm =</span> T),
+            <span class="dt">n.A1.qualis =</span> <span class="kw">sum</span>(qualis <span class="op">==</span><span class="st"> 'A1'</span>, <span class="dt">na.rm =</span> T),
+            <span class="dt">n.A2.qualis =</span> <span class="kw">sum</span>(qualis <span class="op">==</span><span class="st"> 'A2'</span>, <span class="dt">na.rm =</span> T),
+            <span class="dt">median.authorship =</span> <span class="kw">median</span>(<span class="kw">as.numeric</span>(order.aut), <span class="dt">na.rm =</span> T ))
+
+knitr<span class="op">::</span><span class="kw">kable</span>(my.tab)</code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">name</th>
+<th align="right">n.papers</th>
+<th align="right">max.SJR</th>
+<th align="right">mean.SJR</th>
+<th align="right">n.A1.qualis</th>
+<th align="right">n.A2.qualis</th>
+<th align="right">median.authorship</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Denis Borenstein</td>
+<td align="right">64</td>
+<td align="right">3.674</td>
+<td align="right">1.3165610</td>
+<td align="right">22</td>
+<td align="right">15</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">João Luiz Becker</td>
+<td align="right">58</td>
+<td align="right">3.885</td>
+<td align="right">0.8090000</td>
+<td align="right">5</td>
+<td align="right">13</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">Marcelo Brutti Righi</td>
+<td align="right">42</td>
+<td align="right">1.767</td>
+<td align="right">0.3961111</td>
+<td align="right">6</td>
+<td align="right">14</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Marcelo Scherer Perlin</td>
+<td align="right">18</td>
+<td align="right">2.029</td>
+<td align="right">0.7755000</td>
+<td align="right">2</td>
+<td align="right">3</td>
+<td align="right">1</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
