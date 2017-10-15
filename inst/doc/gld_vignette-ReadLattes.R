@@ -22,6 +22,10 @@ tpublic <- l.out$tpublic
 str(tpublic)
 
 ## ------------------------------------------------------------------------
+tsupervisions <- l.out$tsupervisions
+str(tsupervisions)
+
+## ------------------------------------------------------------------------
 library(ggplot2)
 
 p <- ggplot(tpublic, aes(x = qualis)) +

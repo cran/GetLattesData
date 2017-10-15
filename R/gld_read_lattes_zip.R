@@ -34,7 +34,7 @@ gld_read_zip <- function(zip.in){
 
   # start reading files using XML
 
-  my.l <- XML::xmlToList(XML::xmlParse(file.path(my.tempdir, 'curriculo.xml')) )
+  my.l <- XML::xmlToList(XML::xmlParse(file.path(my.tempdir, 'curriculo.xml'), encoding = 'UTF-8') )
 
   # Do RESEARCHERS
 
@@ -76,7 +76,7 @@ gld_read_zip <- function(zip.in){
 
   # fix names to eng
   names(data.tpesq) <- c('name', 'last.update', 'phd.institution', 'phd.start.year', 'phd.end.year',
-                         'country.origin', 'Major Field', 'Minor Field')
+                         'country.origin', 'major.field', 'minor.field')
 
   # clean data
   data.tpesq$last.update <- as.Date(data.tpesq$last.update, '%d%m%Y')
@@ -84,7 +84,9 @@ gld_read_zip <- function(zip.in){
   data.tpesq$id.file <- basename(zip.in)
 
   # PAPERS
-  cat(' - ', as.character(data.tpesq$name) )
+  my.name <- as.character(data.tpesq$name)
+  Encoding(my.name) <- 'UTF-8'
+  cat(' - ', my.name)
 
   papers <- my.l$`PRODUCAO-BIBLIOGRAFICA`$`ARTIGOS-PUBLICADOS`
 
@@ -152,9 +154,70 @@ gld_read_zip <- function(zip.in){
                               '-',
                               stringr::str_sub(data.tpublic$ISSN, 5,8) )
 
+  # SUPERVISIONS
+  ORIENTACOES <- my.l$`OUTRA-PRODUCAO`$`ORIENTACOES-CONCLUIDAS`
+  ORIENTACOES.active <- my.l$`DADOS-COMPLEMENTARES`$`ORIENTACOES-EM-ANDAMENTO`
+
+  data.supervisions <- data.frame()
+  if (!is.null(ORIENTACOES)) {
+
+    for (i.orient in ORIENTACOES) {
+      i.orient[[1]]
+      i.orient[[2]]
+      course <- i.orient[[1]]['NATUREZA']
+      type.course <- i.orient[[1]]['TIPO']
+      std.name <- i.orient[[2]]['NOME-DO-ORIENTADO']
+      year.supervision <- as.numeric(i.orient[[1]]['ANO'])
+
+      temp.df <- data.frame(id = basename(zip.in),
+                            name = data.tpesq$name,
+                            situation = 'CONCLUIDA',
+                            type.course,
+                            course,
+                            std.name,
+                            year.supervision)
+
+      rownames(temp.df) <-  NULL
+
+      data.supervisions <- rbind(data.supervisions, temp.df)
+
+    }
+  }
+
+  data.supervisions.active <- data.frame()
+  if (!is.null(ORIENTACOES.active)) {
+
+    for (i.orient in ORIENTACOES.active) {
+      i.orient[[1]]
+      i.orient[[2]]
+      course <- i.orient[[1]]['NATUREZA']
+      type.course <- i.orient[[1]]['TIPO']
+      std.name <- i.orient[[2]]['NOME-DO-ORIENTANDO']
+      year.supervision <- as.numeric(i.orient[[1]]['ANO'])
+
+      temp.df <- data.frame(id = basename(zip.in),
+                            name = data.tpesq$name,
+                            situation = 'EM ANDAMENTO',
+                            type.course,
+                            course,
+                            std.name,
+                            year.supervision)
+
+      rownames(temp.df) <-  NULL
+
+      data.supervisions.active <- rbind(data.supervisions.active, temp.df)
+
+    }
+
+    data.supervisions <- rbind(data.supervisions, data.supervisions.active)
+
+
+  }
+
   # output
   my.l <- list(tpesq = data.tpesq,
-               tpublic=data.tpublic)
+               tpublic=data.tpublic,
+               tsupervisions = data.supervisions)
   return(my.l)
 
 }

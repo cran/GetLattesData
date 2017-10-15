@@ -1,7 +1,7 @@
 #' Downloads and reads Lattes data based on a vector of Lattes ids
 #'
-#' This function downloads xml data directly from Lattes and reads the resulting file, giving as output two dataframes
-#' , one with the description of researchers and the second with several information about all publications
+#' This function downloads xml data directly from Lattes and reads the resulting file, giving as output three dataframes
+#' , a table with description of researchers, list of all publications and a table with completed supervisions
 #'
 #' @param id.vec A vector of Lattes ids (e.g. id.vec <- c('K4723925J2', 'K4713546D3') )
 #' @param field.qualis Area of Qualis to get Qualis journal rankings (default equals NULL). Eg. area.qualis <- 'ECONOMIA'
@@ -11,6 +11,7 @@
 #'  \describe{
 #'   \item{tpesq}{A dataframe with information about researchers}
 #'   \item{tpublic}{A dataframe with information about publications}
+#'   \item{tsupervisions}{A dataframe with information about all supervisions}
 #' }
 #'
 #' @export
@@ -55,6 +56,7 @@ gld_get_lattes_data <- function(id.vec,
   suppressWarnings({
     tpesq   <- do.call(args = lapply(my.l, function(x) x$tpesq)  , what = dplyr::bind_rows)
     tpublic <- do.call(args = lapply(my.l, function(x) x$tpublic), what = dplyr::bind_rows)
+    tsupervisions <- do.call(args = lapply(my.l, function(x) x$tsupervisions), what = dplyr::bind_rows)
   })
 
   # do Qualis
@@ -72,8 +74,45 @@ gld_get_lattes_data <- function(id.vec,
   tpublic$SJR <- df.sjr$SJR[idx]
   tpublic$H.SJR <- df.sjr$`H index`[idx]
 
+  # fix datatypes
+
+  suppressWarnings({
+    tpesq$name           <- as.character(tpesq$name)
+    tpesq$phd.start.year <- as.numeric(tpesq$phd.start.year)
+    tpesq$phd.end.year   <- as.numeric(tpesq$phd.end.year)
+    tpesq$major.field    <- as.character(tpesq$major.field)
+    tpesq$minor.field    <- as.character(tpesq$minor.field)
+    tpesq$country.origin <- as.character(tpesq$country.origin)
+
+    tpublic$name         <- as.character(tpublic$name)
+    tpublic$year         <- as.numeric(tpublic$year)
+    tpublic$language     <- as.character(tpublic$language)
+    tpublic$start.page   <- as.numeric(tpublic$start.page)
+    tpublic$end.page     <- as.numeric(tpublic$end.page)
+    tpublic$order.aut    <- as.numeric(tpublic$order.aut)
+    tpublic$n.authors    <- as.numeric(tpublic$n.authors)
+
+
+  })
+
+  # force utf-8
+  my.enc.fct <- function(x){
+    if (is.character(x)) Encoding(x) <- 'UTF-8'
+    return(x)
+  }
+
+  tpesq <- as.data.frame(lapply(tpesq, my.enc.fct),
+                         stringsAsFactors = F)
+
+  tpublic <- as.data.frame(lapply(tpublic, my.enc.fct),
+                           stringsAsFactors = F)
+
+  tsupervisions <- as.data.frame(lapply(tsupervisions, my.enc.fct),
+                           stringsAsFactors = F)
+
+
   # return data
-  l.out <- list(tpesq = tpesq, tpublic = tpublic)
+  l.out <- list(tpesq = tpesq, tpublic = tpublic, tsupervisions = tsupervisions)
   return(l.out)
 
 }

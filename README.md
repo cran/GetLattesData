@@ -1,6 +1,6 @@
 # Package GetLattesData
 
-[Lattes](http://lattes.cnpq.br/) is the largest and unique platform for academic curriculumns. There you can find information about the academic work of **ALL** Brazilian scholars. It includes institution of PhD, current employer, field of work, all publications metadata and many more. It is an unique and reliable source of information for bibliometric studies. 
+[Lattes](http://lattes.cnpq.br/) is an unique and largest platform for academic curriculumns. There you can find information about the academic work of **all** Brazilian scholars. It includes institution of PhD, current employer, field of work, all publications metadata and more. It is an unique and reliable source of information for bibliometric studies. 
 
 I've been working with Lattes data for some time. Here I present a short list of papers that have used this data.
 
@@ -12,11 +12,17 @@ I've been working with Lattes data for some time. Here I present a short list of
 
 - Predatory publications in the Brazilian academic system: an empirical analysis (Working paper)
 
-Package `GetLattesData` is a wrap up of the functions that I've been using for acessing the dataset. It's main innovation is the possibility of downloading data directly from Lattes, without any kind of manual work. 
+Package `GetLattesData` is a wrap up of the functions that I've been using for accessing the dataset. It's main innovation is the possibility of downloading data directly from Lattes, without any manual work or captcha solving. 
 
 # Installation
 
-The package is not yeat in CRAN. In the meanwhile, you can install it using devtools.
+The package is available in CRAN:
+
+```
+install.packages('GetLattesData')
+```
+  
+You can also install the development version from Github:
 
 ```
 #install.packages('devtools')
@@ -24,6 +30,8 @@ devtools::install_github('msperlin/GetLattesData')
 ```
 
 # Example of usage 
+
+See [vignette for more examples](https://CRAN.R-project.org/package=GetLattesData).
 
 ```
 library(GetLattesData)
