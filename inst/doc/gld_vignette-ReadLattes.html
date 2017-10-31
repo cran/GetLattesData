@@ -12,7 +12,7 @@
 
 <meta name="author" content="Marcelo Perlin" />
 
-<meta name="date" content="2017-10-15" />
+<meta name="date" content="2017-10-31" />
 
 <title>How to use GetLattesData</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">How to use GetLattesData</h1>
 <h4 class="author"><em>Marcelo Perlin</em></h4>
-<h4 class="date"><em>2017-10-15</em></h4>
+<h4 class="date"><em>2017-10-31</em></h4>
 
 
 
@@ -99,17 +99,33 @@ field.qualis =<span class="st"> 'ADMINISTRAÇÃO PÚBLICA E DE EMPRESAS, CIÊNCI
 
 l.out &lt;-<span class="st"> </span><span class="kw">gld_get_lattes_data</span>(<span class="dt">id.vec =</span> my.ids, <span class="dt">field.qualis =</span> field.qualis)</code></pre></div>
 <pre><code>## 
-## Downloading file  /tmp/RtmpeJ4HJu/K4713546D3_2017-10-15.zip
-## Downloading file  /tmp/RtmpeJ4HJu/K4440252H7_2017-10-15.zip
-## Downloading file  /tmp/RtmpeJ4HJu/K4783858A0_2017-10-15.zip
-## Downloading file  /tmp/RtmpeJ4HJu/K4723925J2_2017-10-15.zip
-## Reading  K4713546D3_2017-10-15.zip -  Marcelo Scherer Perlin  found 18  papers
-## Reading  K4440252H7_2017-10-15.zip -  Marcelo Brutti Righi    found 47  papers
-## Reading  K4783858A0_2017-10-15.zip -  João Luiz Becker    found 58  papers
-## Reading  K4723925J2_2017-10-15.zip -  Denis Borenstein    found 65  papers</code></pre>
+## Downloading file  /tmp/RtmpMgDepW/K4713546D3_2017-10-31.zip
+## Downloading file  /tmp/RtmpMgDepW/K4440252H7_2017-10-31.zip
+## Downloading file  /tmp/RtmpMgDepW/K4783858A0_2017-10-31.zip
+## Downloading file  /tmp/RtmpMgDepW/K4723925J2_2017-10-31.zip
+## Reading  K4713546D3_2017-10-31.zip -  Marcelo Scherer Perlin
+##  Found 18 published papers
+##  Found 10 supervisions
+##  Found 2 published books
+##  Found 0 book chapters
+## Reading  K4440252H7_2017-10-31.zip -  Marcelo Brutti Righi
+##  Found 47 published papers
+##  Found 3 supervisions
+##  Found 2 published books
+##  Found 1 book chapters
+## Reading  K4783858A0_2017-10-31.zip -  João Luiz Becker
+##  Found 58 published papers
+##  Found 137 supervisions
+##  Found 7 published books
+##  Found 13 book chapters
+## Reading  K4723925J2_2017-10-31.zip -  Denis Borenstein
+##  Found 65 published papers
+##  Found 95 supervisions
+##  Found 1 published books
+##  Found 6 book chapters</code></pre>
 <p>The output <code>my.l</code> is a list with three items:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(l.out)</code></pre></div>
-<pre><code>## [1] &quot;tpesq&quot;         &quot;tpublic&quot;       &quot;tsupervisions&quot;</code></pre>
+<pre><code>## [1] &quot;tpesq&quot;         &quot;tpublic&quot;       &quot;tsupervisions&quot; &quot;tbooks&quot;</code></pre>
 <p>The first is a dataframe with information about researchers:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tpesq &lt;-<span class="st"> </span>l.out<span class="op">$</span>tpesq
 <span class="kw">str</span>(tpesq)</code></pre></div>
@@ -122,7 +138,7 @@ l.out &lt;-<span class="st"> </span><span class="kw">gld_get_lattes_data</span>(
 ##  $ country.origin : chr  &quot;Brasil&quot; &quot;Brasil&quot; &quot;Brasil&quot; &quot;Brasil&quot;
 ##  $ major.field    : chr  &quot;CIENCIAS_SOCIAIS_APLICADAS&quot; &quot;CIENCIAS_SOCIAIS_APLICADAS&quot; &quot;CIENCIAS_SOCIAIS_APLICADAS&quot; &quot;ENGENHARIAS&quot;
 ##  $ minor.field    : chr  &quot;Administração&quot; &quot;Administração&quot; &quot;Administração&quot; &quot;Engenharia de Produção&quot;
-##  $ id.file        : chr  &quot;K4713546D3_2017-10-15.zip&quot; &quot;K4440252H7_2017-10-15.zip&quot; &quot;K4783858A0_2017-10-15.zip&quot; &quot;K4723925J2_2017-10-15.zip&quot;</code></pre>
+##  $ id.file        : chr  &quot;K4713546D3_2017-10-31.zip&quot; &quot;K4440252H7_2017-10-31.zip&quot; &quot;K4783858A0_2017-10-31.zip&quot; &quot;K4723925J2_2017-10-31.zip&quot;</code></pre>
 <p>The second dataframe contains information about all publications, including Qualis and SJR:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tpublic &lt;-<span class="st"> </span>l.out<span class="op">$</span>tpublic
 <span class="kw">str</span>(tpublic)</code></pre></div>
@@ -144,7 +160,7 @@ l.out &lt;-<span class="st"> </span><span class="kw">gld_get_lattes_data</span>(
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tsupervisions &lt;-<span class="st"> </span>l.out<span class="op">$</span>tsupervisions
 <span class="kw">str</span>(tsupervisions)</code></pre></div>
 <pre><code>## 'data.frame':    258 obs. of  7 variables:
-##  $ id              : chr  &quot;K4713546D3_2017-10-15.zip&quot; &quot;K4713546D3_2017-10-15.zip&quot; &quot;K4713546D3_2017-10-15.zip&quot; &quot;K4713546D3_2017-10-15.zip&quot; ...
+##  $ id              : chr  &quot;K4713546D3_2017-10-31.zip&quot; &quot;K4713546D3_2017-10-31.zip&quot; &quot;K4713546D3_2017-10-31.zip&quot; &quot;K4713546D3_2017-10-31.zip&quot; ...
 ##  $ name            : chr  &quot;Marcelo Scherer Perlin&quot; &quot;Marcelo Scherer Perlin&quot; &quot;Marcelo Scherer Perlin&quot; &quot;Marcelo Scherer Perlin&quot; ...
 ##  $ situation       : chr  &quot;CONCLUIDA&quot; &quot;CONCLUIDA&quot; &quot;CONCLUIDA&quot; &quot;CONCLUIDA&quot; ...
 ##  $ type.course     : chr  &quot;ACADEMICO&quot; &quot;ACADEMICO&quot; &quot;ACADEMICO&quot; &quot;ACADEMICO&quot; ...
