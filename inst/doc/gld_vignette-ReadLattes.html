@@ -12,7 +12,7 @@
 
 <meta name="author" content="Marcelo Perlin" />
 
-<meta name="date" content="2017-10-31" />
+<meta name="date" content="2017-11-12" />
 
 <title>How to use GetLattesData</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">How to use GetLattesData</h1>
 <h4 class="author"><em>Marcelo Perlin</em></h4>
-<h4 class="date"><em>2017-10-31</em></h4>
+<h4 class="date"><em>2017-11-12</em></h4>
 
 
 
@@ -80,103 +80,93 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li><p><a href="http://www.sciencedirect.com/science/article/pii/S1751157716301559">The Brazilian scientific output published in journals: A study based on a large CV database</a></p></li>
 <li><p><a href="http://bibliotecadigital.fgv.br/ojs/index.php/rbfin/article/view/47157">The researchers, the publications and the journals of Finance in Brazil: An analysis based on resumes from the Lattes platform</a></p></li>
 <li><p><a href="http://www.scielo.br/scielo.php?script=sci_arttext&amp;pid=S1415-65552017000100062">Análise do Perfil dos Acadêmicos e de suas Publicações Científicas em Administração (in Portuguese)</a></p></li>
-<li><p>Predatory publications in the Brazilian academic system: an empirical analysis (Working paper)</p></li>
+<li><p>Is predatory publishing a real threat? Evidence from a large database study. <a href="https://www.dropbox.com/s/9xcuc8z64fntxob/PredatoryPublishing_v2.pdf?dl=0">Working paper</a></p></li>
 </ul>
-<p>Package <code>GetLattesData</code> is a wrap up of the functions that I’ve been using for acessing the dataset. It’s main innovation is the possibility of downloading data directly from Lattes, without any manual work or captcha solving.</p>
+<p>Package <code>GetLattesData</code> is a wrap up of functions I’ve been using for accessing the dataset. It’s main innovation is the possibility of downloading data directly from Lattes, without any manual work or captcha solving.</p>
 <div id="example-of-usage" class="section level1">
 <h1>Example of usage</h1>
-<p>Let’s consider a simple example of downloading information for a group of scholars. I selected a couple of coleagues at my university. Their Lattes id can be easilly found in <a href="http://lattes.cnpq.br/">Lattes website</a>. After searching for a name, notice the internet address of the resulting CV, such as <a href="http://buscatextual.cnpq.br/buscatextual/visualizacv.do?id=K4713546D3" class="uri">http://buscatextual.cnpq.br/buscatextual/visualizacv.do?id=K4713546D3</a>. Lattes ID is the final 10 digit code of this address. In our case, it is <code>'K4713546D3'</code>.</p>
+<p>Let’s consider a simple example of downloading information for a group of scholars. I selected a couple of coleagues at my university. Their Lattes id can be easilly found in <a href="http://lattes.cnpq.br/">Lattes website</a>. After searching for a name, notice the internet address of the resulting CV, such as <a href="http://buscatextual.cnpq.br/buscatextual/visualizacv.do?id=K4713546D3" class="uri">http://buscatextual.cnpq.br/buscatextual/visualizacv.do?id=K4713546D3</a>. Lattes ID is the final 10 digit code of this address. In our example, it is <code>'K4713546D3'</code>.</p>
 <p>Since we all work in the business department of UFRGS, the impact of our publications is localy set by the Qualis ranking of Management, Accounting and Tourism (<code>'ADMINISTRAÇÃO PÚBLICA E DE EMPRESAS, CIÊNCIAS CONTÁBEIS E TURISMO'</code>). Qualis is the local journal ranking in Brazil. You can read more about Qualis in <a href="https://en.wikipedia.org/wiki/Qualis_(CAPES)">Wikipedia</a> and <a href="http://www.sciencedirect.com/science/article/pii/S1751157716301559">here</a></p>
-<p>Now, based on the two sets of information, vector of ids and field of Qualis, we can use <code>GetLattesData</code> to download all up to date information about the researchers:</p>
+<p>Now, based on the two sets of information, vector of ids and field of Qualis, we use <code>GetLattesData</code> to download all up to date information available in Lattes:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(GetLattesData)
 
 <span class="co"># ids from EA-UFRGS</span>
-my.ids &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">'K4713546D3'</span>, <span class="st">'K4440252H7'</span>, 
-            <span class="st">'K4783858A0'</span>, <span class="st">'K4723925J2'</span>)
+my.ids &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">'K4713546D3'</span>, <span class="st">'K4440252H7'</span>, <span class="st">'K4723925J2'</span>)
 
 <span class="co"># qualis for the field of management</span>
 field.qualis =<span class="st"> 'ADMINISTRAÇÃO PÚBLICA E DE EMPRESAS, CIÊNCIAS CONTÁBEIS E TURISMO'</span>
 
 l.out &lt;-<span class="st"> </span><span class="kw">gld_get_lattes_data</span>(<span class="dt">id.vec =</span> my.ids, <span class="dt">field.qualis =</span> field.qualis)</code></pre></div>
 <pre><code>## 
-## Downloading file  /tmp/RtmpMgDepW/K4713546D3_2017-10-31.zip
-## Downloading file  /tmp/RtmpMgDepW/K4440252H7_2017-10-31.zip
-## Downloading file  /tmp/RtmpMgDepW/K4783858A0_2017-10-31.zip
-## Downloading file  /tmp/RtmpMgDepW/K4723925J2_2017-10-31.zip
-## Reading  K4713546D3_2017-10-31.zip -  Marcelo Scherer Perlin
-##  Found 18 published papers
+## Downloading file  /tmp/RtmpNc2uWB/K4713546D3_2017-11-12.zip
+## Downloading file  /tmp/RtmpNc2uWB/K4440252H7_2017-11-12.zip
+## Downloading file  /tmp/RtmpNc2uWB/K4723925J2_2017-11-12.zip
+## Reading  K4713546D3_2017-11-12.zip -  Marcelo Scherer Perlin
+##  Found 19 published papers
+##  Found 1 accepted paper(s)
 ##  Found 10 supervisions
 ##  Found 2 published books
 ##  Found 0 book chapters
-## Reading  K4440252H7_2017-10-31.zip -  Marcelo Brutti Righi
+##  Found 17 conference papers
+## Reading  K4440252H7_2017-11-12.zip -  Marcelo Brutti Righi
 ##  Found 47 published papers
-##  Found 3 supervisions
+##  Found 2 accepted paper(s)
+##  Found 4 supervisions
 ##  Found 2 published books
 ##  Found 1 book chapters
-## Reading  K4783858A0_2017-10-31.zip -  João Luiz Becker
-##  Found 58 published papers
-##  Found 137 supervisions
-##  Found 7 published books
-##  Found 13 book chapters
-## Reading  K4723925J2_2017-10-31.zip -  Denis Borenstein
+##  Found 0 conference papers
+## Reading  K4723925J2_2017-11-12.zip -  Denis Borenstein
 ##  Found 65 published papers
+##  Found 0 accepted paper(s)
 ##  Found 95 supervisions
 ##  Found 1 published books
-##  Found 6 book chapters</code></pre>
-<p>The output <code>my.l</code> is a list with three items:</p>
+##  Found 6 book chapters
+##  Found 89 conference papers</code></pre>
+<p>The output <code>my.l</code> is a list with the following dataframes:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(l.out)</code></pre></div>
-<pre><code>## [1] &quot;tpesq&quot;         &quot;tpublic&quot;       &quot;tsupervisions&quot; &quot;tbooks&quot;</code></pre>
+<pre><code>## [1] &quot;tpesq&quot;             &quot;tpublic.published&quot; &quot;tpublic.accepted&quot; 
+## [4] &quot;tsupervisions&quot;     &quot;tbooks&quot;            &quot;tconferences&quot;</code></pre>
 <p>The first is a dataframe with information about researchers:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tpesq &lt;-<span class="st"> </span>l.out<span class="op">$</span>tpesq
 <span class="kw">str</span>(tpesq)</code></pre></div>
-<pre><code>## 'data.frame':    4 obs. of  9 variables:
-##  $ name           : chr  &quot;Marcelo Scherer Perlin&quot; &quot;Marcelo Brutti Righi&quot; &quot;João Luiz Becker&quot; &quot;Denis Borenstein&quot;
-##  $ last.update    : Date, format: &quot;2017-09-24&quot; &quot;2017-10-09&quot; ...
-##  $ phd.institution: chr  &quot;University of Reading&quot; &quot;Universidade Federal de Santa Maria&quot; &quot;University Of California At Los Angeles&quot; &quot;University of Strathclyde&quot;
-##  $ phd.start.year : num  2007 2013 1982 1991
-##  $ phd.end.year   : num  2010 2015 1986 1995
-##  $ country.origin : chr  &quot;Brasil&quot; &quot;Brasil&quot; &quot;Brasil&quot; &quot;Brasil&quot;
-##  $ major.field    : chr  &quot;CIENCIAS_SOCIAIS_APLICADAS&quot; &quot;CIENCIAS_SOCIAIS_APLICADAS&quot; &quot;CIENCIAS_SOCIAIS_APLICADAS&quot; &quot;ENGENHARIAS&quot;
-##  $ minor.field    : chr  &quot;Administração&quot; &quot;Administração&quot; &quot;Administração&quot; &quot;Engenharia de Produção&quot;
-##  $ id.file        : chr  &quot;K4713546D3_2017-10-31.zip&quot; &quot;K4440252H7_2017-10-31.zip&quot; &quot;K4783858A0_2017-10-31.zip&quot; &quot;K4723925J2_2017-10-31.zip&quot;</code></pre>
-<p>The second dataframe contains information about all publications, including Qualis and SJR:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tpublic &lt;-<span class="st"> </span>l.out<span class="op">$</span>tpublic
-<span class="kw">str</span>(tpublic)</code></pre></div>
-<pre><code>## 'data.frame':    188 obs. of  13 variables:
-##  $ name         : chr  &quot;Marcelo Scherer Perlin&quot; &quot;Marcelo Scherer Perlin&quot; &quot;Marcelo Scherer Perlin&quot; &quot;Marcelo Scherer Perlin&quot; ...
-##  $ article.title: chr  &quot;Análise do Perfil dos Acadêmicos e de suas Publicações Científicas em Administração&quot; &quot;The Brazilian scientific output published in journals: A study based on a large CV database&quot; &quot;THE FORECASTING POWER OF INTERNET SEARCH QUERIES IN THE BRAZILIAN FINANCIAL MARKET&quot; &quot;A multistage stochastic programming asset-liability management model: an application to the Brazilian pension fund industry&quot; ...
-##  $ year         : num  2017 2017 2017 2017 2016 ...
-##  $ language     : chr  &quot;Português&quot; &quot;Inglês&quot; &quot;Inglês&quot; &quot;Inglês&quot; ...
-##  $ journal.title: chr  &quot;RAC. Revista de Administração Contemporânea (Impresso)&quot; &quot;Journal of Informetrics&quot; &quot;RAM. REVISTA DE ADMINISTRAÇÃO MACKENZIE (ONLINE)&quot; &quot;OPTIMIZATION AND ENGINEERING&quot; ...
-##  $ ISSN         : chr  &quot;1415-6555&quot; &quot;1751-1577&quot; &quot;1678-6971&quot; &quot;1389-4420&quot; ...
-##  $ start.page   : num  62 18 184 349 1 353 454 443 188 162 ...
-##  $ end.page     : num  83 31 210 368 20 374 467 478 213 NA ...
-##  $ order.aut    : num  2 1 3 3 1 2 1 1 2 1 ...
-##  $ n.authors    : num  3 5 3 5 1 2 4 2 2 2 ...
-##  $ qualis       : chr  &quot;A2&quot; NA &quot;B1&quot; &quot;A2&quot; ...
-##  $ SJR          : num  NA 2.029 NA 0.481 NA ...
-##  $ H.SJR        : int  NA 50 NA 29 NA NA 45 NA NA NA ...</code></pre>
-<p>The third element of the list provides information about all academic supervisions of each researcher:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tsupervisions &lt;-<span class="st"> </span>l.out<span class="op">$</span>tsupervisions
-<span class="kw">str</span>(tsupervisions)</code></pre></div>
-<pre><code>## 'data.frame':    258 obs. of  7 variables:
-##  $ id              : chr  &quot;K4713546D3_2017-10-31.zip&quot; &quot;K4713546D3_2017-10-31.zip&quot; &quot;K4713546D3_2017-10-31.zip&quot; &quot;K4713546D3_2017-10-31.zip&quot; ...
-##  $ name            : chr  &quot;Marcelo Scherer Perlin&quot; &quot;Marcelo Scherer Perlin&quot; &quot;Marcelo Scherer Perlin&quot; &quot;Marcelo Scherer Perlin&quot; ...
-##  $ situation       : chr  &quot;CONCLUIDA&quot; &quot;CONCLUIDA&quot; &quot;CONCLUIDA&quot; &quot;CONCLUIDA&quot; ...
-##  $ type.course     : chr  &quot;ACADEMICO&quot; &quot;ACADEMICO&quot; &quot;ACADEMICO&quot; &quot;ACADEMICO&quot; ...
-##  $ course          : chr  &quot;Dissertação de mestrado&quot; &quot;Dissertação de mestrado&quot; &quot;Dissertação de mestrado&quot; &quot;Dissertação de mestrado&quot; ...
-##  $ std.name        : chr  &quot;Gladys Helena Albarracín Gómez&quot; &quot;Martin Pontuschka&quot; &quot;Henrique Pinto Ramos&quot; &quot;Kadja Mendes&quot; ...
-##  $ year.supervision: num  2015 2015 2016 2016 2016 ...</code></pre>
+<pre><code>## 'data.frame':    3 obs. of  9 variables:
+##  $ name           : chr  &quot;Marcelo Scherer Perlin&quot; &quot;Marcelo Brutti Righi&quot; &quot;Denis Borenstein&quot;
+##  $ last.update    : Date, format: &quot;2017-11-09&quot; &quot;2017-11-10&quot; ...
+##  $ phd.institution: chr  &quot;University of Reading&quot; &quot;Universidade Federal de Santa Maria&quot; &quot;University of Strathclyde&quot;
+##  $ phd.start.year : num  2007 2013 1991
+##  $ phd.end.year   : num  2010 2015 1995
+##  $ country.origin : chr  &quot;Brasil&quot; &quot;Brasil&quot; &quot;Brasil&quot;
+##  $ major.field    : chr  &quot;CIENCIAS_SOCIAIS_APLICADAS&quot; &quot;CIENCIAS_SOCIAIS_APLICADAS&quot; &quot;ENGENHARIAS&quot;
+##  $ minor.field    : chr  &quot;Administração&quot; &quot;Administração&quot; &quot;Engenharia de Produção&quot;
+##  $ id.file        : chr  &quot;K4713546D3_2017-11-12.zip&quot; &quot;K4440252H7_2017-11-12.zip&quot; &quot;K4723925J2_2017-11-12.zip&quot;</code></pre>
+<p>The second dataframe contains information about all published publications, including Qualis and SJR:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dplyr<span class="op">::</span><span class="kw">glimpse</span>(l.out<span class="op">$</span>tpublic.published)</code></pre></div>
+<pre><code>## Observations: 131
+## Variables: 11
+## $ name          &lt;chr&gt; &quot;Marcelo Scherer Perlin&quot;, &quot;Marcelo Scherer Perli...
+## $ article.title &lt;chr&gt; &quot;Análise do Perfil dos Acadêmicos e de suas Publ...
+## $ year          &lt;dbl&gt; 2017, 2017, 2017, 2017, 2017, 2016, 2016, 2016, ...
+## $ language      &lt;chr&gt; &quot;Português&quot;, &quot;Inglês&quot;, &quot;Inglês&quot;, &quot;Português&quot;, &quot;I...
+## $ journal.title &lt;chr&gt; &quot;RAC. Revista de Administração Contemporânea (Im...
+## $ ISSN          &lt;chr&gt; &quot;1415-6555&quot;, &quot;1678-6971&quot;, &quot;1389-4420&quot;, &quot;1062-940...
+## $ order.aut     &lt;dbl&gt; 2, 3, 3, 2, 1, 1, 2, 1, 1, 2, 1, 1, 1, 2, 1, 1, ...
+## $ n.authors     &lt;dbl&gt; 3, 3, 5, 3, 5, 1, 2, 4, 2, 2, 2, 1, 3, 3, 3, 2, ...
+## $ qualis        &lt;chr&gt; &quot;A2&quot;, &quot;B1&quot;, &quot;A2&quot;, &quot;A2&quot;, NA, &quot;B1&quot;, &quot;B1&quot;, &quot;A1&quot;, &quot;B...
+## $ SJR           &lt;dbl&gt; NA, NA, 0.481, 0.525, 2.029, NA, NA, 0.615, NA, ...
+## $ H.SJR         &lt;int&gt; NA, NA, 29, 27, 50, NA, NA, 45, NA, NA, NA, NA, ...</code></pre>
+<p>Other dataframes in <code>l.out</code> included information about accepted papers, supervisions, books and conferences.</p>
 <div id="an-application-of-getlattesdata" class="section level2">
 <h2>An application of <code>GetLattesData</code></h2>
-<p>Based on <code>GetLattesData</code> and other packages, it is easy to create academic reports for a large number of researchers. See next, where we plot the number of publications for each researcher, conditioning on Qualis ranking.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2)
+<p><code>GetLattesData</code> makes it easy to create academic reports for a large number of researchers. See next, where we plot the number of publications for each researcher, conditioning on Qualis ranking.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tpublic.published &lt;-<span class="st"> </span>l.out<span class="op">$</span>tpublic.published
 
-p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(tpublic, <span class="kw">aes</span>(<span class="dt">x =</span> qualis)) <span class="op">+</span>
+<span class="kw">library</span>(ggplot2)
+
+p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(tpublic.published, <span class="kw">aes</span>(<span class="dt">x =</span> qualis)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_bar</span>(<span class="dt">position =</span> <span class="st">'identity'</span>) <span class="op">+</span><span class="st"> </span><span class="kw">facet_wrap</span>(<span class="op">~</span>name) <span class="op">+</span>
 <span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="kw">paste0</span>(<span class="st">'Qualis: '</span>, field.qualis))
 <span class="kw">print</span>(p)</code></pre></div>
-<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
 <p>We can also use <code>dplyr</code> to do some simple assessment of academic productivity:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(dplyr)</code></pre></div>
 <pre><code>## 
@@ -187,7 +177,7 @@ p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(tpublic, <span cl
 <pre><code>## The following objects are masked from 'package:base':
 ## 
 ##     intersect, setdiff, setequal, union</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">my.tab &lt;-<span class="st"> </span>tpublic <span class="op">%&gt;%</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">my.tab &lt;-<span class="st"> </span>tpublic.published <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">group_by</span>(name) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">summarise</span>(<span class="dt">n.papers =</span> <span class="kw">n</span>(),
             <span class="dt">max.SJR =</span> <span class="kw">max</span>(SJR, <span class="dt">na.rm =</span> T),
@@ -220,30 +210,21 @@ knitr<span class="op">::</span><span class="kw">kable</span>(my.tab)</code></pre
 <td align="right">2</td>
 </tr>
 <tr class="even">
-<td align="left">João Luiz Becker</td>
-<td align="right">58</td>
-<td align="right">3.885</td>
-<td align="right">0.8090000</td>
-<td align="right">5</td>
-<td align="right">13</td>
-<td align="right">2</td>
-</tr>
-<tr class="odd">
 <td align="left">Marcelo Brutti Righi</td>
 <td align="right">47</td>
 <td align="right">1.767</td>
-<td align="right">0.4363103</td>
+<td align="right">0.4340968</td>
 <td align="right">7</td>
-<td align="right">16</td>
+<td align="right">18</td>
 <td align="right">1</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">Marcelo Scherer Perlin</td>
-<td align="right">18</td>
+<td align="right">19</td>
 <td align="right">2.029</td>
-<td align="right">0.7755000</td>
+<td align="right">0.7397143</td>
 <td align="right">2</td>
-<td align="right">3</td>
+<td align="right">4</td>
 <td align="right">1</td>
 </tr>
 </tbody>

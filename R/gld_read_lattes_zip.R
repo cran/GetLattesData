@@ -70,89 +70,41 @@ gld_read_zip <- function(zip.in){
                     "ANO.DE.INICIO","ANO.DE.CONCLUSAO",  "PAIS.DE.NACIONALIDADE",
                     'GArea','AArea')
 
+  # set cols to change name
+  better.names <- c('name', 'last.update', 'phd.institution', 'phd.start.year', 'phd.end.year',
+                    'country.origin', 'major.field', 'minor.field')
 
   idx <- cols.to.keep %in% names(data.tpesq)
   data.tpesq <- data.tpesq[, cols.to.keep[idx]]
 
   # fix names to eng
-  names(data.tpesq) <- c('name', 'last.update', 'phd.institution', 'phd.start.year', 'phd.end.year',
-                         'country.origin', 'major.field', 'minor.field')
+  names(data.tpesq) <- better.names[idx]
 
   # clean data
   data.tpesq$last.update <- as.Date(data.tpesq$last.update, '%d%m%Y')
   rownames(data.tpesq) <- NULL
   data.tpesq$id.file <- basename(zip.in)
 
-  # PAPERS
+  # PUBLISHED PAPERS
   my.name <- as.character(data.tpesq$name)
   Encoding(my.name) <- 'UTF-8'
   cat(' - ', my.name)
 
-  papers <- my.l$`PRODUCAO-BIBLIOGRAFICA`$`ARTIGOS-PUBLICADOS`
+  published.papers <- my.l$`PRODUCAO-BIBLIOGRAFICA`$`ARTIGOS-PUBLICADOS`
 
-  data.tpublic <- data.frame()
-  if (!is.null(papers)) { # if data is found for papers
+  data.tpublic.published <- gld.get.papers.info(published.papers, name.author = data.tpesq$name,
+                                         id.author = basename(zip.in))
 
-    n.papers <- length(papers)
+  cat(paste0('\n\tFound ',nrow(data.tpublic.published), ' published papers'))
 
-    for (i.l in papers){
+  # ACCEPTED PAPERS
+  accpt.papers <- my.l$`PRODUCAO-BIBLIOGRAFICA`$`ARTIGOS-ACEITOS-PARA-PUBLICACAO`
 
-      info <- do.call(c,list(i.l$`DADOS-BASICOS-DO-ARTIGO`,
-                             i.l$`DETALHAMENTO-DO-ARTIGO`))
-
-      # find order of authorship
-
-      idx <- names(i.l) == 'AUTORES'
-      coauthors <- do.call(rbind, i.l[idx])
-
-      idx <- stringdist::amatch(as.character(data.tpesq$name),
-                                as.character(coauthors[, 1]),
-                                maxDist = Inf)
-
-      if ( (length(idx)!=0)&(!is.na(idx) ) ){
-        info['order.aut'] <- unlist(coauthors[idx, 3])
-        info['n.aut'] <- nrow(coauthors)
-
-      } else {
-        info['order.aut'] <- NA
-        info['n.aut'] <- NA
-
-      }
-
-      # supress warnings (change of col classes)
-      suppressWarnings(
-        data.tpublic <- dplyr::bind_rows(data.tpublic, data.frame(t(info)) )
-      )
-
-    }
+  data.tpublic.accepted <- gld.get.papers.info(accpt.papers, name.author = data.tpesq$name,
+                                         id.author = basename(zip.in))
 
 
-    if (n.papers!=0){
-      data.tpublic$id <- rep(basename(zip.in), n.papers)
-      data.tpublic$name <- data.tpesq$name
-
-      cols.to.keep <- c('name','TITULO.DO.ARTIGO','ANO.DO.ARTIGO','IDIOMA',
-                        "TITULO.DO.PERIODICO.OU.REVISTA",
-                        'PAIS-DE-PUBLICACAO','ISSN', 'PAGINA.INICIAL', 'PAGINA.FINAL',
-                        'order.aut', 'n.aut')
-
-
-      idx <- cols.to.keep %in% names(data.tpublic)
-      data.tpublic <- data.tpublic[ , cols.to.keep[idx]]
-
-      names(data.tpublic) <- c('name', 'article.title', 'year', 'language','journal.title', 'contry.publication',
-                               'ISSN', 'start.page', 'end.page', 'order.aut', 'n.authors')[idx]
-
-    }
-
-  }
-
-  cat(paste0('\n\tFound ',n.papers, ' published papers'))
-  # fix issn
-
-  data.tpublic$ISSN <- paste0(stringr::str_sub(data.tpublic$ISSN, 1,4),
-                              '-',
-                              stringr::str_sub(data.tpublic$ISSN, 5,8) )
+  cat(paste0('\n\tFound ', nrow(data.tpublic.accepted), ' accepted paper(s)'))
 
   # SUPERVISIONS
   ORIENTACOES <- my.l$`OUTRA-PRODUCAO`$`ORIENTACOES-CONCLUIDAS`
@@ -273,11 +225,43 @@ gld_read_zip <- function(zip.in){
 
   data.books <- dplyr::bind_rows(data.books.published, data.books.chapters)
 
+
+  # conferences
+
+  CONFERENCES <- my.l$`PRODUCAO-BIBLIOGRAFICA`$`TRABALHOS-EM-EVENTOS`
+
+  cat(paste0('\n\tFound ',length(CONFERENCES), ' conference papers'))
+
+  data.conferences <- data.frame()
+  if (!is.null(CONFERENCES)) {
+
+    for (i.conf in CONFERENCES) {
+
+      temp.df <- data.frame(id = basename(zip.in),
+                            name = data.tpesq$name,
+                            article.title = i.conf$`DADOS-BASICOS-DO-TRABALHO`['TITULO-DO-TRABALHO'],
+                            article.year = i.conf$`DADOS-BASICOS-DO-TRABALHO`['ANO-DO-TRABALHO'],
+                            event.classification = i.conf$`DETALHAMENTO-DO-TRABALHO`['CLASSIFICACAO-DO-EVENTO'],
+                            event.name = i.conf$`DETALHAMENTO-DO-TRABALHO`['NOME-DO-EVENTO'],
+                            event.isbn = i.conf$`DETALHAMENTO-DO-TRABALHO`['ISBN'],
+                            event.city = i.conf$`DETALHAMENTO-DO-TRABALHO`['CIDADE-DO-EVENTO'],
+                            stringsAsFactors = F)
+
+      rownames(temp.df) <-  NULL
+
+      data.conferences <- rbind(data.conferences, temp.df)
+
+    }
+  }
+
   # output
+
   my.l <- list(tpesq = data.tpesq,
-               tpublic=data.tpublic,
+               tpublic.published = data.tpublic.published,
+               tpublic.accepted = data.tpublic.accepted,
                tsupervisions = data.supervisions,
-               tbooks = data.books)
+               tbooks = data.books,
+               tconferences = data.conferences)
 
   return(my.l)
 

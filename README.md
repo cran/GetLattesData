@@ -1,5 +1,7 @@
 # Package GetLattesData
 
+[![](http://cranlogs.r-pkg.org/badges/GetTDData)](https://CRAN.R-project.org/package=GetTDData)
+
 [Lattes](http://lattes.cnpq.br/) is an unique and largest platform for academic curriculumns. There you can find information about the academic work of **all** Brazilian scholars. It includes institution of PhD, current employer, field of work, all publications metadata and more. It is an unique and reliable source of information for bibliometric studies. 
 
 I've been working with Lattes data for some time. Here I present a short list of papers that have used this data.
@@ -10,9 +12,9 @@ I've been working with Lattes data for some time. Here I present a short list of
 
 - [Análise do Perfil dos Acadêmicos e de suas Publicações Científicas em Administração (in Portuguese)](http://www.scielo.br/scielo.php?script=sci_arttext&pid=S1415-65552017000100062)
 
-- Predatory publications in the Brazilian academic system: an empirical analysis (Working paper)
+- Is predatory publishing a real threat? Evidence from a large database study. [Working paper](https://www.dropbox.com/s/9xcuc8z64fntxob/PredatoryPublishing_v2.pdf?dl=0)
 
-Package `GetLattesData` is a wrap up of the functions that I've been using for accessing the dataset. It's main innovation is the possibility of downloading data directly from Lattes, without any manual work or captcha solving. 
+Package `GetLattesData` is a wrap up of functions I've been using for accessing the dataset. It's main innovation is the possibility of downloading data directly from Lattes, without any manual work or captcha solving. 
 
 # Installation
 
@@ -31,7 +33,7 @@ devtools::install_github('msperlin/GetLattesData')
 
 # Example of usage 
 
-See [vignette for more examples](https://CRAN.R-project.org/package=GetLattesData).
+See [vignette for more examples](https://CRAN.R-project.org/package=GetTDData).
 
 ```
 library(GetLattesData)
@@ -46,5 +48,5 @@ field.qualis = 'ADMINISTRAÇÃO PÚBLICA E DE EMPRESAS, CIÊNCIAS CONTÁBEIS E T
 l.out <- gld_get_lattes_data(id.vec = my.ids, field.qualis = field.qualis)
 
 tpublic <- l.out$tpublic
-str(tpublic)
+dplyr::glimpse(tpublic)
 ```
