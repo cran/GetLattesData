@@ -1,3 +1,11 @@
+### Version 1.0 (2018-08-13)
+
+Lattes website is back without captcha! The new version of GetLattesData is a bit slower than the old one, but it works.
+
+Minor changes:
+- [fixed multiple issn issue in SJR](https://github.com/msperlin/GetLattesData/issues/6)
+
+
 ### Version 0.9 (2017-11-27)
 
 Lattes website is offline. Online downloading of xml files is no longer possible.

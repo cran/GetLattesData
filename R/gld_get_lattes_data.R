@@ -26,16 +26,16 @@ gld_get_lattes_data <- function(id.vec,
                                 folder.dl = tempdir()) {
 
 
-  my.message <- paste0('\n\n:(\n\nSadly, the Lattes address where the xml files were found and downloaded ',
-'without a captcha wall is not online for a couple of weeks now.  Difficult to say why is that. ',
-'I hope, and will keep track of, if a new site is published.',
-'In the meanwhile, the features of GetLattesData are relegated to offline files.',
-'\nMarcelo Perlin, 2017-11-28 ')
-
-  cat(my.message)
-
-  cat('\n\nReturning an empty dataframe..')
-  return(data.frame())
+#   my.message <- paste0('\n\n:(\n\nSadly, the Lattes address where the xml files were found and downloaded ',
+# 'without a captcha wall is not online for a couple of weeks now.  Difficult to say why is that. ',
+# 'I hope, and will keep track of, if a new site is published.',
+# 'In the meanwhile, the features of GetLattesData are relegated to offline files.',
+# '\nMarcelo Perlin, 2017-11-28 ')
+#
+#   cat(my.message)
+#
+#   cat('\n\nReturning an empty dataframe..')
+#   return(data.frame())
 
   # check args
   id.vec <- as.character(id.vec)
@@ -91,16 +91,45 @@ gld_get_lattes_data <- function(id.vec,
   # do sjr
   df.sjr <- gld_get_SJR()
 
-  idx <- match(tpublic.published$ISSN, df.sjr$Issn)
+  #idx <- match(tpublic.published$ISSN, df.sjr$Issn)
+  # fix for multiple issn (https://github.com/msperlin/GetLattesData/issues/6#issuecomment-412626175)
+  idx <- unlist(sapply(stringr::str_replace_all(tpublic.published$ISSN, "-", "" ),
+                       function(issn.in, df.sjr){
+                         temp.idx <- which(stringr::str_detect( df.sjr$Issn,issn.in))
+
+                         if (stringr::str_trim(issn.in) == '') return(NA)
+
+                         if(length(temp.idx) == 0){
+                           temp.idx <- NA
+                         }
+                         return(temp.idx[1])
+                       } ,
+                       df.sjr = df.sjr,
+                       USE.NAMES=F))
+
+
   tpublic.published$SJR <- df.sjr$SJR[idx]
   tpublic.published$H.SJR <- df.sjr$`H index`[idx]
 
-  idx <- match(tpublic.accepted$ISSN, df.sjr$Issn)
+  #idx <- match(tpublic.accepted$ISSN, df.sjr$Issn)
+  # fix for multiple issn (https://github.com/msperlin/GetLattesData/issues/6#issuecomment-412626175)
+  idx <- unlist(sapply(stringr::str_replace_all(tpublic.accepted$ISSN, "-", "" ),
+                       function(issn.in, df.sjr){
+                         temp.idx <- which(stringr::str_detect(df.sjr$Issn, issn.in ))
+
+                         if (stringr::str_trim(issn.in) == '') return(NA)
+
+                         if(length(temp.idx) == 0){
+                           temp.idx <- NA
+                         }
+                         return(temp.idx[1])
+                       } ,
+                       df.sjr = df.sjr,
+                       USE.NAMES=F))
   tpublic.accepted$SJR <- df.sjr$SJR[idx]
   tpublic.accepted$H.SJR <- df.sjr$`H index`[idx]
 
   # fix datatypes
-
   suppressWarnings({
     tpesq$name           <- as.character(tpesq$name)
     tpesq$phd.start.year <- as.numeric(tpesq$phd.start.year)
