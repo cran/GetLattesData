@@ -1,3 +1,11 @@
+## Version 1.4 (2020-03-07)
+
+- switched to dplyr::tibbles to avoid problems with CRAN (and not data.frame)
+
+## Version 1.3.2 (2019-11-10)
+
+- Fixed another bug in df.tpublic$accepted.papers when CV had no paper.
+
 ## Version 1.3.1 (2019-09-07)
 
 - Added bsc information to output
@@ -7,10 +15,9 @@
 
 - Added Msc titles to output
 
-
 ## Version 1.2 (2018-10-11)
 
-- Changes to the Lattes website seems to be permanent and stable. The main change is that in order to download  xml zip files, one must mannualy break a captcha. Based on this change, the package no longer works by downloading the files, but acessing it from locally (yes, you must download all files manualy). This update fix [Github issue 10](https://github.com/msperlin/GetLattesData/issues/10) and [Github issue 09](https://github.com/msperlin/GetLattesData/issues/09).
+- Changes to the Lattes website seems to be permanent and stable. The main change is that in order to download  xml zip files, one must manualy break a captcha. Based on this change, the package no longer works by downloading the files, but acessing it from locally (yes, you must download all files manualy). This update fix [Github issue 10](https://github.com/msperlin/GetLattesData/issues/10) and [Github issue 09](https://github.com/msperlin/GetLattesData/issues/09).
 
 
 ## Version 1.0 (2018-08-13)
