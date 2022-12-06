@@ -1,6 +1,6 @@
 Package: GetLattesData
 Title: Reading Bibliometric Data from Lattes Platform
-Version: 1.4.1
+Version: 1.4.2
 Authors@R: person("Marcelo", "Perlin", email = "marceloperlin@gmail.com", role = c("aut", "cre"))
 Description: A simple API for downloading and reading xml data directly from Lattes <http://lattes.cnpq.br/>.
 Depends: R (>= 3.3.0)
@@ -12,8 +12,8 @@ RoxygenNote: 7.2.0
 Suggests: knitr, rmarkdown, testthat, ggplot2
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2022-06-08 12:22:14 UTC; msperlin
+Packaged: 2022-12-06 16:36:30 UTC; msperlin
 Author: Marcelo Perlin [aut, cre]
 Maintainer: Marcelo Perlin <marceloperlin@gmail.com>
 Repository: CRAN
-Date/Publication: 2022-06-08 12:40:02 UTC
+Date/Publication: 2022-12-06 17:02:43 UTC
