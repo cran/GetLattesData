@@ -16,7 +16,6 @@
 gld_read_zip <- function(zip.in){
 
   # error checking
-
   if (length(zip.in)>1) {
     stop('Function gld_read_zip  only reads one zip file at a time..')
   }
@@ -80,7 +79,6 @@ gld_read_zip <- function(zip.in){
   AArea <- my.l$`DADOS-GERAIS`$`AREAS-DE-ATUACAO`[[1]][3]
 
   # fix for GArea and AArea
-
   if (is.null(GArea)) GArea <- NA
   if (is.null(AArea)) AArea <- NA
 
@@ -99,19 +97,18 @@ gld_read_zip <- function(zip.in){
                     "CODIGO-INSTITUICAO-SANDUICHE","PERMISSAO-DE-DIVULGACAO",'GArea','AArea')
 
   # those to keep
-  cols.to.keep <- c("NOME-COMPLETO" ,"DATA-ATUALIZACAO",
+  cols.to.keep <- c("NOME-COMPLETO" ,"NOME-EM-CITACOES-BIBLIOGRAFICAS", "DATA-ATUALIZACAO",
                     "GRAD-NOME-INSTITUICAO", "GRAD-ANO-DE-INICIO", "GRAD-ANO-DE-CONCLUSAO", "GRAD-NOME-CURSO",
                     "MSC-NOME-INSTITUICAO","MSC-ANO-DE-INICIO", "MSC-ANO-DE-CONCLUSAO",
                     "DOC-NOME-INSTITUICAO" ,"DOC-ANO-DE-INICIO","DOC-ANO-DE-CONCLUSAO",
                     "PAIS-DE-NACIONALIDADE", 'GArea','AArea')
 
   # set cols to change name
-  better.names <- c('name', 'last.update',
+  better.names <- c('name', "name_in_citations", 'last.update',
                     'bsc.institution', 'bsc.start.year', 'bsc.end.year', 'bsc.course',
                     'msc.institution', 'msc.start.year', 'msc.end.year',
                     'phd.institution', 'phd.start.year', 'phd.end.year',
                     'country.origin', 'major.field', 'minor.field')
-
 
   idx <- cols.to.keep %in% names(data.tpesq)
   data.tpesq <- data.tpesq[, cols.to.keep[idx]]
@@ -123,6 +120,9 @@ gld_read_zip <- function(zip.in){
   data.tpesq$last.update <- as.Date(data.tpesq$last.update, '%d%m%Y')
   rownames(data.tpesq) <- NULL
   data.tpesq$id.file <- basename(zip.in)
+
+  last_update <- lubridate::dmy(my.l$.attrs["DATA-ATUALIZACAO"])
+  data.tpesq$last_update <- last_update
 
   # fix issue with no PhD
   if (is.null(data.tpesq$phd.institution)){
@@ -169,6 +169,7 @@ gld_read_zip <- function(zip.in){
       type.course <- i.orient[[1]]['TIPO']
       std.name <- i.orient[[2]]['NOME-DO-ORIENTADO']
       year.supervision <- as.numeric(i.orient[[1]]['ANO'])
+      type_supervision <- as.character(i.orient[[2]]["TIPO-DE-ORIENTACAO"])
 
       temp.df <- dplyr::tibble(id.file = basename(zip.in),
                             name = data.tpesq$name,
@@ -176,7 +177,8 @@ gld_read_zip <- function(zip.in){
                             type.course,
                             course,
                             std.name,
-                            year.supervision)
+                            year.supervision,
+                            type_supervision)
 
       rownames(temp.df) <-  NULL
 
@@ -194,6 +196,7 @@ gld_read_zip <- function(zip.in){
       type.course <- i.orient[[1]]['TIPO']
       std.name <- i.orient[[2]]['NOME-DO-ORIENTANDO']
       year.supervision <- as.numeric(i.orient[[1]]['ANO'])
+      type_supervision <- as.character(i.orient[[2]]["TIPO-DE-ORIENTACAO"])
 
       temp.df <- dplyr::tibble(id.file = basename(zip.in),
                             name = data.tpesq$name,
@@ -201,7 +204,8 @@ gld_read_zip <- function(zip.in){
                             type.course,
                             course,
                             std.name,
-                            year.supervision)
+                            year.supervision,
+                            type_supervision)
 
       rownames(temp.df) <-  NULL
 
@@ -273,7 +277,6 @@ gld_read_zip <- function(zip.in){
   data.books <- dplyr::bind_rows(data.books.published, data.books.chapters)
 
   # conferences
-
   CONFERENCES <- my.l$`PRODUCAO-BIBLIOGRAFICA`$`TRABALHOS-EM-EVENTOS`
 
   cat(paste0('\n\tFound ',length(CONFERENCES), ' conference papers'))
@@ -299,14 +302,72 @@ gld_read_zip <- function(zip.in){
     }
   }
 
-  # output
+  # employment
+  if (!is.null(my.l$`DADOS-GERAIS`$`ATUACOES-PROFISSIONAIS`)) {
 
+    AT_PROF <- do.call(c, list(my.l$`DADOS-GERAIS`$`ATUACOES-PROFISSIONAIS`))
+
+    df_atprof <- dplyr::bind_rows(
+      lapply(AT_PROF, parse_at_prof)
+    )
+
+    df_atprof$name <- data.tpesq$name
+    df_atprof$id.file <- basename(zip.in)
+    #df <- dplyr::as_tibble(t(AT_PROF))
+  } else {
+    df_atprof <- dplyr::tibble()
+  }
+
+  cat(paste0('\n\tFound ', nrow(df_atprof), ' employment registries'))
+
+  # research papers
+
+  my_xml <- xml2::read_xml(zip.in)
+
+  all_proj <- xml2::xml_find_all(my_xml, ".//PROJETO-DE-PESQUISA")
+
+  if (length(all_proj) != 0) {
+
+    l_info <- all_proj |>
+      xml2::xml_attrs()
+
+    df_projects <- purrr::map_df(
+      l_info,
+      function(x) tibble::as_tibble(t(x))
+      )
+
+    df_projects$name <- data.tpesq$name
+    df_projects$id.file <- basename(zip.in)
+
+    # all_names <- c("SEQUENCIA-PROJETO", "ANO-INICIO", "ANO-FIM", "NOME-DO-PROJETO",
+    #                "SITUACAO", "NATUREZA", "NUMERO-GRADUACAO", "NUMERO-ESPECIALIZACAO",
+    #                "NUMERO-MESTRADO-ACADEMICO", "NUMERO-MESTRADO-PROF", "NUMERO-DOUTORADO",
+    #                "DESCRICAO-DO-PROJETO", "IDENTIFICADOR-PROJETO", "DESCRICAO-DO-PROJETO-INGLES",
+    #                "NOME-DO-PROJETO-INGLES", "FLAG-POTENCIAL-INOVACAO", "NOME-COORDENADOR-CERTIFICACAO",
+    #                "DATA-CERTIFICACAO", "NUMERO_TECNICO_NIVEL_MEDIO")
+    to_keep <- c("SEQUENCIA-PROJETO", "ANO-INICIO", "ANO-FIM", "NOME-DO-PROJETO",
+                 "SITUACAO", "NATUREZA", "NUMERO-GRADUACAO", "NUMERO-ESPECIALIZACAO",
+                 "NUMERO-MESTRADO-ACADEMICO", "NUMERO-MESTRADO-PROF", "NUMERO-DOUTORADO",
+                 "IDENTIFICADOR-PROJETO", "FLAG-POTENCIAL-INOVACAO", "NOME-COORDENADOR-CERTIFICACAO",
+                 "DATA-CERTIFICACAO", "NUMERO_TECNICO_NIVEL_MEDIO")
+
+    df_projects <- df_projects[, to_keep]
+
+  } else {
+    df_projects <- dplyr::tibble()
+  }
+
+  cat(paste0('\n\tFound ', nrow(df_projects), ' projects'))
+
+  # output
   my.l <- list(tpesq = data.tpesq,
                tpublic.published = data.tpublic.published,
                tpublic.accepted = data.tpublic.accepted,
                tsupervisions = data.supervisions,
                tbooks = data.books,
-               tconferences = data.conferences)
+               tconferences = data.conferences,
+               t_df_atprof = df_atprof,
+               tprojects = df_projects)
 
   return(my.l)
 

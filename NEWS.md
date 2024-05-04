@@ -1,3 +1,14 @@
+## Version 1.5 (2024-05-04)
+
+- added research and extension projects in output 
+
+## Version 1.4.4 (2023-11-27)
+
+- added date of last update
+- added professional activities to output 
+- added type of supervision
+- updated on qualis table for 2017-2020 and SJR for 2022
+
 ## Version 1.4.3 (2023-08-09)
 
 - added DOI information for publications 
